@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [unreleased]
 
 ### Added
+- **PODAAC-4852**
+  - Add HOSS jupyter test notebook
 ### Deprecated
 ### Removed
 ### Fixed
