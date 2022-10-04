@@ -84,7 +84,7 @@ def run():
                 pm.execute_notebook(
                    notebook,
                    f"{notebook_path}/output/{collection}_{environment}_output_{notebook_name}",
-                   parameters=dict(collection_id=collection, venue=venue.name, token=launchpad_token)
+                   parameters=dict(collection_id=collection, venue=venue.name, input_token=launchpad_token)
                 )
                 success.append(collection)
             except Exception as ex:
