@@ -27,7 +27,7 @@ jobs:
           echo "UAT_FAILURE_FILE=uat_fail.txt" >> $GITHUB_ENV
           echo "OPS_FAILURE_FILE=ops_fail.txt" >> $GITHUB_ENV
           echo "SLACK_REPORT_CONTENT=" >> $GITHUB_ENV
-          echo "UMM_TOOL_NAME=XYZ_PROV" >> $GITHUB_ENV
+          echo "UMM_TOOL_NAME=sds/HOSS Geographic" >> $GITHUB_ENV
       - name: Set environment variables for notebook
         run: |
           echo "OPS_USERNAME=${{ secrets.EDL_USER }}" >> $GITHUB_ENV
