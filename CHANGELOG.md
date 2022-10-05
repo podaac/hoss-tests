@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [unreleased]
 
 ### Added
+  - PODAAC-4853
+    - Added HOSS_test workflow
+    - Added PR template
+    - Added remove_association script for cleanup
+    - Added association files
 ### Deprecated
 ### Removed
 ### Fixed
