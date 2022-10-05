@@ -130,12 +130,12 @@ jobs:
         if: |
           steps.check_UAT_output_files.outputs.FAIL_EXISTS == 'true'
         run: |
-          python3 "remove_association.py" -p POCLOUD -n '${{ env.UMM_TOOL_NAME }}' -e uat -i '${{ env.OUTPUT_DIR }}/${{ env.UAT_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
+          python3 "remove_association.py" -p EEDTEST -n '${{ env.UMM_TOOL_NAME }}' -e uat -i '${{ env.OUTPUT_DIR }}/${{ env.UAT_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
       - name: Remove OPS collections on FAIL
         if: |
           steps.check_OPS_output_files.outputs.FAIL_EXISTS == 'true'
         run: |
-          python3 "remove_association.py" -p POCLOUD -n '${{ env.UMM_TOOL_NAME }}' -e ops -i '${{ env.OUTPUT_DIR }}/${{ env.OPS_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
+          python3 "remove_association.py" -p XYZ_PROV -n '${{ env.UMM_TOOL_NAME }}' -e ops -i '${{ env.OUTPUT_DIR }}/${{ env.OPS_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
       - name: Update UAT collections on SUCCESS
         if: |
           steps.check_UAT_output_files.outputs.SUCCESS_EXISTS == 'true'
