@@ -18,8 +18,7 @@ RUN apt-get update \
     && pip3 install --upgrade pip \
     && pip3 install cython \
     && apt-get clean \
-    && pip3 install python-cmr \
-    && pip3 install git+https://github.com/podaac/cmr-umm-updater.git
+    && pip3 install python-cmr
 
 RUN adduser --quiet --disabled-password --shell /bin/sh --home /home/dockeruser --uid 300 dockeruser
 
