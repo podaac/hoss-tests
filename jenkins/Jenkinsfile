@@ -1,0 +1,83 @@
+pipeline {
+    agent {
+        dockerfile {
+            filename 'build.Dockerfile'
+            dir 'jenkins'
+            label 'devops1-cm'
+            args '-v $HOME/.netrc:/home/dockeruser/.netrc -v /home/cm/certs/:/home/dockeruser/certs'
+        }
+    }
+    environment {
+        GITHUB_TOKEN = "github.com_personal_access_token"
+    }
+    stages {
+        stage('Setup parameters') {
+            steps {
+                script { 
+                    testPasses = false
+                    properties([
+                        parameters([
+                            string(
+                                defaultValue: 'develop',
+                                description: 'The GitHub branch on which you want to execute the action of!', 
+                                name: 'BRANCH', 
+                                trim: true
+                            )
+                        ])
+                    ])
+                }
+            }
+        }
+        stage('Execute Github action'){
+            steps{
+                script {
+                    // HOSS Test workflow Id is 36576133
+                    // Command: https://api.github.com/repos/podaac/hoss-tests/actions/workflows
+                    workflow_ID = "36576133"
+                    urlBase = "https://api.github.com/repos/podaac/hoss-tests/actions/workflows/" + workflow_ID
+                    testIsFreeToRun = true
+
+                    // Check if the workflow is running currently or not
+                    withCredentials([usernamePassword(credentialsId: env.GITHUB_TOKEN, usernameVariable: 'USER', passwordVariable: 'TOKEN')]) {
+                        final String url = urlBase + "/runs?status=in_progress"
+
+                        final String get_response = sh(script: "curl --request GET \
+                            --url '$url' \
+                            --header 'authorization: Bearer ${TOKEN}'",
+                            returnStdout: true).trim()
+
+                        def workflowRunCount = sh(script: "echo '${get_response}' | jq .total_count",
+                            returnStdout: true).trim()
+                        
+                        echo "Workflow run found: ${workflowRunCount}"
+                        if (workflowRunCount != "0") {
+                            testIsFreeToRun = false
+                        }
+
+                        echo "Execute notebook test: ${testIsFreeToRun}"
+                    }
+
+                    if(testIsFreeToRun) {
+                        withCredentials([usernamePassword(credentialsId: env.GITHUB_TOKEN, usernameVariable: 'USER', passwordVariable: 'TOKEN')]) {
+                            final String url = urlBase + "/dispatches"
+                            final String post_response = sh(script: "curl --request POST \
+                                --url '$url' \
+                                --header 'authorization: Bearer ${TOKEN}' \
+                                --data '{\"ref\": \"" + params.BRANCH + "\"}'",
+                                returnStdout: true).trim()
+
+                            if (post_response != '') {
+                                echo post_response
+                                testPasses = false
+                                unstable(message: 'API request encountered an error!')   
+                            }
+                            else {
+                                testPasses = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
