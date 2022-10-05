@@ -17,8 +17,20 @@ RUN apt-get update \
     && apt-get -y install jq \
     && pip3 install --upgrade pip \
     && pip3 install cython \
-    && apt-get clean \
-    && pip3 install python-cmr
+    && pip3 install papermill \
+    && pip3 install xarray \
+    && pip3 install jupyter \
+    && pip3 install black \
+    && pip3 install matplotlib \
+    && pip3 install netCDF4 \
+    && pip3 install python-cmr \
+    && pip3 install git+https://github.com/nasa/harmony-py.git \
+    && pip3 install git+https://github.com/podaac/cmr-umm-updater.git \
+    && pip3 install click --upgrade \
+    && pip3 install git+https://github.com/podaac/cmr-association-diff.git \
+    && pip3 install git+https://github.com/podaac/l2ss-py.git \
+    && pip3 install python-dateutil --upgrade \
+    && apt-get clean
 
 RUN adduser --quiet --disabled-password --shell /bin/sh --home /home/dockeruser --uid 300 dockeruser
 
