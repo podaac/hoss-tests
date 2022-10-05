@@ -43,15 +43,15 @@ jobs:
           pip3 install --upgrade pip
           pip3 install papermill
           pip3 install xarray
+          pip3 install jupyter
+          pip3 install black
           pip3 install matplotlib
           pip3 install netCDF4
-          pip3 install python-cmr
           pip3 install git+https://github.com/nasa/harmony-py.git
-          echo "Harmony degrades dateutil to 2.7.5 even though it's compatible with newer ones, but other components need 2.8+"
-          pip3 install python-dateutil --upgrade
           pip3 install git+https://github.com/podaac/cmr-umm-updater.git
           pip3 install git+https://github.com/podaac/cmr-association-diff.git@6193079a14e36f4c9526aa426015c2b6be41f0e2
           pip3 install git+https://github.com/podaac/l2ss-py.git
+          pip3 install python-dateutil --upgrade
       - name: Run CMR Association diff scripts
         run: |
           cmr_association_diff -e uat -t service -a "cmr/uat_associations.txt" -p EEDTEST -n '${{ env.UMM_TOOL_NAME }}' -o ${{ env.UAT_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
