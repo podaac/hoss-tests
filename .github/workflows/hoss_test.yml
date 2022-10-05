@@ -50,14 +50,15 @@ jobs:
           pip3 install git+https://github.com/podaac/cmr-umm-updater.git
           pip3 install git+https://github.com/podaac/cmr-association-diff.git@6193079a14e36f4c9526aa426015c2b6be41f0e2
           pip3 install python-dateutil --upgrade
+          pip3 install git+https://github.com/podaac/l2ss-py.git
       - name: Run CMR Association diff scripts
         run: |
-          cmr_association_diff -e uat -t service -a "cmr/uat_associations.txt" -p POCLOUD -n 'PODAAC Hoss' -o ${{ env.UAT_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
-          cmr_association_diff -e ops -t service -a "cmr/ops_associations.txt" -p POCLOUD -n 'PODAAC Hoss' -o ${{ env.OPS_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
+          cmr_association_diff -e uat -t service -a "cmr/uat_associations.txt" -p EEDTEST -n 'sds/HOSS Geographic' -o ${{ env.UAT_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
+          cmr_association_diff -e ops -t service -a "cmr/ops_associations.txt" -p XYZ_PROV -n 'sds/HOSS Geographic' -o ${{ env.OPS_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
       - name: Run Jupyter notebooks
         run: |
-          python3 "notebook_collection_test.py" -n "notebooks/hoss_collection_test.ipynb" -e uat -i ${{ env.UAT_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }}
-          python3 "notebook_collection_test.py" -n "notebooks/hoss_collection_test.ipynb" -e ops -i ${{ env.OPS_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }}
+          python3 "notebook_collection_test.py" -n "notebooks/hoss_collection_test.ipynb" -e uat -i ${{ env.UAT_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
+          python3 "notebook_collection_test.py" -n "notebooks/hoss_collection_test.ipynb" -e ops -i ${{ env.OPS_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
       - name: Check UAT files
         id: check_UAT_output_files
         run: |
