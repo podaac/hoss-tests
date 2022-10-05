@@ -1,7 +1,7 @@
 pipeline {
     agent {
         dockerfile {
-            filename 'build.HossDockerfile'
+            filename 'build.Dockerfile'
             dir 'jenkins'
             label 'devops1-cm'
             args '-v $HOME/.netrc:/home/dockeruser/.netrc -v /home/cm/certs/:/home/dockeruser/certs'
