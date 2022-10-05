@@ -27,6 +27,7 @@ jobs:
           echo "UAT_FAILURE_FILE=uat_fail.txt" >> $GITHUB_ENV
           echo "OPS_FAILURE_FILE=ops_fail.txt" >> $GITHUB_ENV
           echo "SLACK_REPORT_CONTENT=" >> $GITHUB_ENV
+          echo "UMM_TOOL_NAME=XYZ_PROV" >> $GITHUB_ENV
       - name: Set environment variables for notebook
         run: |
           echo "OPS_USERNAME=${{ secrets.EDL_USER }}" >> $GITHUB_ENV
@@ -52,8 +53,8 @@ jobs:
           pip3 install python-dateutil --upgrade
       - name: Run CMR Association diff scripts
         run: |
-          cmr_association_diff -e uat -t service -a "cmr/uat_associations.txt" -p POCLOUD -n 'sds/HOSS Geographic' -o ${{ env.UAT_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
-          cmr_association_diff -e ops -t service -a "cmr/ops_associations.txt" -p POCLOUD -n 'sds/HOSS Geographic' -o ${{ env.OPS_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
+          cmr_association_diff -e uat -t service -a "cmr/uat_associations.txt" -p POCLOUD -n ${{ env.UMM_TOOL_NAME }} -o ${{ env.UAT_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
+          cmr_association_diff -e ops -t service -a "cmr/ops_associations.txt" -p POCLOUD -n ${{ env.UMM_TOOL_NAME }} -o ${{ env.OPS_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
       - name: Run Jupyter notebooks
         run: |
           python3 "notebook_collection_test.py" -n "notebooks/hoss_collection_test.ipynb" -e uat -i ${{ env.UAT_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }}
@@ -129,12 +130,12 @@ jobs:
         if: |
           steps.check_UAT_output_files.outputs.FAIL_EXISTS == 'true'
         run: |
-          python3 "./utils/remove_association.py" -p POCLOUD -n 'sds/HOSS Geographic' -e uat -i '${{ env.OUTPUT_DIR }}/${{ env.UAT_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
+          python3 "./utils/remove_association.py" -p POCLOUD -n ${{ env.UMM_TOOL_NAME }} -e uat -i '${{ env.OUTPUT_DIR }}/${{ env.UAT_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
       - name: Remove OPS collections on FAIL
         if: |
           steps.check_OPS_output_files.outputs.FAIL_EXISTS == 'true'
         run: |
-          python3 "./utils/remove_association.py" -p POCLOUD -n 'sds/HOSS Geographic' -e ops -i '${{ env.OUTPUT_DIR }}/${{ env.OPS_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
+          python3 "./utils/remove_association.py" -p POCLOUD -n ${{ env.UMM_TOOL_NAME }} -e ops -i '${{ env.OUTPUT_DIR }}/${{ env.OPS_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
       - name: Update UAT collections on SUCCESS
         if: |
           steps.check_UAT_output_files.outputs.SUCCESS_EXISTS == 'true'
