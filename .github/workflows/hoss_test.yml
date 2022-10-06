@@ -1,5 +1,5 @@
 # This is a test pipeline, that verifies and updates the associations in cmr
-name: Jupyter Test
+name: HOSS Test
 # Controls when the workflow will run
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -27,6 +27,7 @@ jobs:
           echo "UAT_FAILURE_FILE=uat_fail.txt" >> $GITHUB_ENV
           echo "OPS_FAILURE_FILE=ops_fail.txt" >> $GITHUB_ENV
           echo "SLACK_REPORT_CONTENT=" >> $GITHUB_ENV
+          echo "UMM_TOOL_NAME=sds/HOSS Geographic" >> $GITHUB_ENV
       - name: Set environment variables for notebook
         run: |
           echo "OPS_USERNAME=${{ secrets.EDL_USER }}" >> $GITHUB_ENV
@@ -40,25 +41,25 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install --upgrade pip
+          pip3 install git+https://github.com/nasa/harmony-py.git
           pip3 install papermill
           pip3 install xarray
           pip3 install jupyter
-          pip3 install black
           pip3 install matplotlib
           pip3 install netCDF4
-          pip3 install git+https://github.com/nasa/harmony-py.git
           pip3 install git+https://github.com/podaac/cmr-umm-updater.git
           pip3 install git+https://github.com/podaac/cmr-association-diff.git@6193079a14e36f4c9526aa426015c2b6be41f0e2
+          pip3 install git+https://github.com/podaac/l2ss-py.git
           pip3 install python-dateutil --upgrade
           pip3 install git+https://github.com/podaac/l2ss-py.git
       - name: Run CMR Association diff scripts
         run: |
-          cmr_association_diff -e uat -t service -a "cmr/uat_associations.txt" -p EEDTEST -n 'sds/HOSS Geographic' -o ${{ env.UAT_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
-          cmr_association_diff -e ops -t service -a "cmr/ops_associations.txt" -p XYZ_PROV -n 'sds/HOSS Geographic' -o ${{ env.OPS_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
+          cmr_association_diff -e uat -t service -a "cmr/uat_associations.txt" -p EEDTEST -n '${{ env.UMM_TOOL_NAME }}' -o ${{ env.UAT_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
+          cmr_association_diff -e ops -t service -a "cmr/ops_associations.txt" -p XYZ_PROV -n '${{ env.UMM_TOOL_NAME }}' -o ${{ env.OPS_OUTPUT_FILE }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
       - name: Run Jupyter notebooks
         run: |
-          python3 "notebook_collection_test.py" -n "notebooks/hoss_collection_test.ipynb" -e uat -i ${{ env.UAT_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
-          python3 "notebook_collection_test.py" -n "notebooks/hoss_collection_test.ipynb" -e ops -i ${{ env.OPS_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
+          python3 "notebook_test.py" -n "notebooks/hoss_collection_test.ipynb" -e uat -i ${{ env.UAT_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
+          python3 "notebook_test.py" -n "notebooks/hoss_collection_test.ipynb" -e ops -i ${{ env.OPS_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
       - name: Check UAT files
         id: check_UAT_output_files
         run: |
@@ -97,7 +98,6 @@ jobs:
           steps.check_UAT_output_files.outputs.FAIL_EXISTS == 'true'
         run: |
           echo "SLACK_REPORT_CONTENT=${{ env.SLACK_REPORT_CONTENT }}\nHOSS-test UAT result: FAILURE\nFailed to run HOSS Notebook on the following collections:\n${{ steps.check_UAT_output_files.outputs.FAIL_CONTENT }}\n" >> $GITHUB_ENV
-          ${{ env.SLACK_REPORT_CONTENT }} += "HOSS-test UAT result: FAILURE\nFailed to run HOSS Notebook on the following collections:\n${{ steps.check_UAT_output_files.outputs.FAIL_CONTENT }}\n"
       - name: Slack Report update - Add info for OPS check - SUCCESS
         if: |
           steps.check_OPS_output_files.outputs.SUCCESS_EXISTS == 'true'
@@ -130,12 +130,12 @@ jobs:
         if: |
           steps.check_UAT_output_files.outputs.FAIL_EXISTS == 'true'
         run: |
-          python3 "./utils/remove_association.py" -p POCLOUD -n 'sds/HOSS Geographic' -e uat -i '${{ env.OUTPUT_DIR }}/${{ env.UAT_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
+          python3 "remove_association.py" -p EEDTEST -n '${{ env.UMM_TOOL_NAME }}' -e uat -i '${{ env.OUTPUT_DIR }}/${{ env.UAT_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
       - name: Remove OPS collections on FAIL
         if: |
           steps.check_OPS_output_files.outputs.FAIL_EXISTS == 'true'
         run: |
-          python3 "./utils/remove_association.py" -p POCLOUD -n 'sds/HOSS Geographic' -e ops -i '${{ env.OUTPUT_DIR }}/${{ env.OPS_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
+          python3 "remove_association.py" -p XYZ_PROV -n '${{ env.UMM_TOOL_NAME }}' -e ops -i '${{ env.OUTPUT_DIR }}/${{ env.OPS_FAILURE_FILE }}' --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
       - name: Update UAT collections on SUCCESS
         if: |
           steps.check_UAT_output_files.outputs.SUCCESS_EXISTS == 'true'

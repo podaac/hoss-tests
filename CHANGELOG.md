@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added PR template
   - Added remove_association script for cleanup
   - Added association files
+  - Added Filehandler utils and related enums
 ### Deprecated
 ### Removed
 ### Fixed
