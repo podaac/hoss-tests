@@ -60,3 +60,8 @@ jobs:
         run: |
           python3 "notebook_test.py" -n "notebooks/hoss_collection_test.ipynb" -e uat -i ${{ env.UAT_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
           python3 "notebook_test.py" -n "notebooks/hoss_collection_test.ipynb" -e ops -i ${{ env.OPS_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
+      - name: Step 3 - Use the Upload Artifact GitHub Action
+        uses: actions/upload-artifact@v2
+        with: 
+          name: assets-for-download
+          path: /home/runner/work/hoss-tests/hoss-tests/notebooks/output
