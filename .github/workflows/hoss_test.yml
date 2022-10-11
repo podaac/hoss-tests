@@ -44,6 +44,11 @@ jobs:
           machine: urs.earthdata.nasa.gov
           username: ${{ secrets.EDL_USER }}
           password: ${{ secrets.EDL_PASS }}
+      - uses: extractions/netrc@v1
+        with:
+          machine: urs.uat.earthdata.nasa.gov
+          username: ${{ secrets.EDL_USER }}
+          password: ${{ secrets.EDL_PASS }}
       - name: Install dependencies
         run: |
           pip3 install --upgrade pip
