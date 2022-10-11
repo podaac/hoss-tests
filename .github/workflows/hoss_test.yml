@@ -61,9 +61,9 @@ jobs:
           python3 "notebook_test.py" -n "notebooks/hoss_collection_test.ipynb" -e uat -i ${{ env.UAT_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_UAT }}
           python3 "notebook_test.py" -n "notebooks/hoss_collection_test.ipynb" -e ops -i ${{ env.OPS_OUTPUT_FILE }} -o ${{ env.OUTPUT_DIR }} --token ${{ secrets.LAUNCHPAD_TOKEN_OPS }}
       - name: wget
-      uses: wei/wget@v1
-      with:
-        args: -qO- https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SMAP_JPL_L3_SSS_CAP_8DAY-RUNNINGMEAN_V5/2022/260/SMAP_L3_SSS_20220921_8DAYS_V5.0.nc
+        uses: wei/wget@v1
+        with:
+          args: -qO- https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/SMAP_JPL_L3_SSS_CAP_8DAY-RUNNINGMEAN_V5/2022/260/SMAP_L3_SSS_20220921_8DAYS_V5.0.nc
       - name: Step 3 - Use the Upload Artifact GitHub Action
         uses: actions/upload-artifact@v2
         with: 
