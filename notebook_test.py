@@ -81,7 +81,6 @@ def run():
 
             try:
                 print(collection)
-                print(f"{notebook_path}/output/{collection}_{environment}_output_{notebook_name}")
                 pm.execute_notebook(
                    notebook,
                    f"{notebook_path}/output/{collection}_{environment}_output_{notebook_name}",
