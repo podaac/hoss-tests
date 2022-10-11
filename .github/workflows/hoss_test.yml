@@ -40,7 +40,7 @@ jobs:
           mkdir ${{ env.OUTPUT_DIR }}
           realpath ${{ env.OUTPUT_DIR }}
       - name: Netrc
-      - uses: little-core-labs/netrc-creds@v2.0.0
+        uses: little-core-labs/netrc-creds@v2.0.0
         with:
           creds: |
             [
