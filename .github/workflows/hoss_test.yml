@@ -39,6 +39,11 @@ jobs:
         run: |
           mkdir ${{ env.OUTPUT_DIR }}
           realpath ${{ env.OUTPUT_DIR }}
+      - uses: extractions/netrc@v1
+        with:
+          machine: urs.earthdata.nasa.gov
+          username: ${{ secrets.EDL_USER }}
+          password: ${{ secrets.EDL_USER }}
       - name: Install dependencies
         run: |
           pip3 install --upgrade pip
