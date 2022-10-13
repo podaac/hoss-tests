@@ -39,22 +39,16 @@ jobs:
         run: |
           mkdir ${{ env.OUTPUT_DIR }}
           realpath ${{ env.OUTPUT_DIR }}
-      - name: Netrc
-        uses: little-core-labs/netrc-creds@v2.0.0
+      - uses: extractions/netrc@v1
         with:
-          creds: |
-            [
-              {
-                "machine": "urs.earthdata.nasa.gov",
-                "login": "${{ secrets.EDL_USER }}",
-                "password": "${{ secrets.EDL_PASS }}"
-              },
-              {
-                "machine": "uat.urs.earthdata.nasa.gov",
-                "login": "${{ secrets.EDL_USER }}",
-                "password": "${{ secrets.EDL_PASS }}"
-              }
-            ]
+          machine: urs.earthdata.nasa.gov
+          username: ${{ secrets.EDL_USER }}
+          password: ${{ secrets.EDL_PASS }}
+      - uses: extractions/netrc@v1
+        with:
+          machine: uat.urs.earthdata.nasa.gov
+          username: ${{ secrets.EDL_USER }}
+          password: ${{ secrets.EDL_PASS }}
       - name: Install dependencies
         run: |
           pip3 install --upgrade pip
