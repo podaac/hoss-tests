@@ -21,8 +21,8 @@ jobs:
 
       - name: Setup netrc
         run: |
-          echo "urs.earthdata.nasa.gov login ${{ secrets.EDL_USER }} password ${{ secrets.EDL_PASS }}" &gt; $HOME/.netrc
-          echo "uat.urs.earthdata.nasa.gov login ${{ secrets.EDL_USER }} ${{ secrets.EDL_PASS }}" &gt; $HOME/.netrc
+          echo "urs.earthdata.nasa.gov login ${{ secrets.EDL_USER }} password ${{ secrets.EDL_PASS }}" >> $HOME/.netrc
+          echo "uat.urs.earthdata.nasa.gov login ${{ secrets.EDL_USER }} ${{ secrets.EDL_PASS }}" >> $HOME/.netrc
       - name: Set environment variables
         run: |
           echo "UAT_OUTPUT_FILE=notebooks/output/uat_output_json.txt" >> $GITHUB_ENV
