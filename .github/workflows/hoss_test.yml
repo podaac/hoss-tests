@@ -18,11 +18,16 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-
-      - name: Setup netrc
-        run: |
-          echo "urs.earthdata.nasa.gov login ${{ secrets.EDL_USER }} password ${{ secrets.EDL_PASS }}" >> $HOME/.netrc
-          echo "uat.urs.earthdata.nasa.gov login ${{ secrets.EDL_USER }} ${{ secrets.EDL_PASS }}" >> $HOME/.netrc
+      - uses: extractions/netrc@v1
+        with:
+          machine: urs.earthdata.nasa.gov
+          username: ${{ secrets.EDL_USER }}
+          password: ${{ secrets.EDL_PASS }}
+      - uses: extractions/netrc@v1
+        with:
+          machine: uat.urs.earthdata.nasa.gov
+          username: ${{ secrets.EDL_USER }}
+          password: ${{ secrets.EDL_PASS }}
       - name: Set environment variables
         run: |
           echo "UAT_OUTPUT_FILE=notebooks/output/uat_output_json.txt" >> $GITHUB_ENV
